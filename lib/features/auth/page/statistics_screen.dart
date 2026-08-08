@@ -37,6 +37,13 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
 
     final isStaff = profile.role.isAtLeast(UserRole.petugas);
     final targetId = _userId ?? profile.id;
+
+    // Realtime: statistik ikut ambil ulang saat kehadiran / tugas berubah.
+    void refreshStats(_, __) =>
+        ref.invalidate(statsDataProvider((userId: targetId, period: _period)));
+    ref.listen(userAttendanceRealtimeProvider(targetId), refreshStats);
+    ref.listen(userSubmissionRealtimeProvider(targetId), refreshStats);
+
     final dataAsync =
         ref.watch(statsDataProvider((userId: targetId, period: _period)));
 

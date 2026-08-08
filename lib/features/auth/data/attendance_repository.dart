@@ -22,7 +22,8 @@ class AttendanceRepository {
   }
 
   /// Petugas: pindai QR anggota untuk kegiatan.
-  Future<Attendance> checkinQr({
+  /// Mengembalikan nama anggota + apakah dia SUDAH hadir sebelumnya.
+  Future<({String userName, bool already})> checkinQr({
     required String activityId,
     required String token,
   }) async {
@@ -30,7 +31,10 @@ class AttendanceRepository {
       'p_activity_id': activityId,
       'p_token': token,
     });
-    return Attendance.fromMap(_row(res));
+    final row = _row(res);
+    final name = (row['member_name'] as String?) ?? '';
+    final already = (row['already'] as bool?) ?? false;
+    return (userName: name.isEmpty ? 'Anggota' : name, already: already);
   }
 
   /// Anggota: check-in GPS. Validasi radius dilakukan di server.
@@ -77,7 +81,7 @@ class AttendanceRepository {
   Future<List<Attendance>> fetchAttendances(String activityId) async {
     final rows = await _client
         .from('attendances')
-        .select('*, profiles(full_name)')
+        .select('*, profiles!user_id(full_name)')
         .eq('activity_id', activityId)
         .order('check_in_time', ascending: false);
     return (rows as List)
@@ -134,4 +138,14 @@ class AttendanceRepository {
       .stream(primaryKey: ['id'])
       .eq('activity_id', activityId);
 });
+
+  /// Roster: semua anggota + status kehadirannya untuk kegiatan.
+  Future<List<RosterEntry>> fetchRoster(String activityId) async {
+    final res = await _client
+        .rpc('activity_roster', params: {'p_activity_id': activityId});
+    return (res as List)
+        .cast<Map<String, dynamic>>()
+        .map(RosterEntry.fromMap)
+        .toList();
+  }
 }

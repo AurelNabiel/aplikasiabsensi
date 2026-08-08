@@ -17,8 +17,9 @@ class QrScanScreen extends ConsumerStatefulWidget {
 class _QrScanScreenState extends ConsumerState<QrScanScreen> {
   final _controller = MobileScannerController();
   bool _processing = false;
-  String? _lastResult;
-  bool _lastOk = false;
+  String? _lastCode; // kode yang terakhir diproses (hindari pindai ganda)
+  String? _result;
+  bool _ok = false;
 
   Future<void> _onDetect(BarcodeCapture capture) async {
     if (_processing) return;
@@ -27,29 +28,47 @@ class _QrScanScreenState extends ConsumerState<QrScanScreen> {
     final code = barcodes.first.rawValue;
     if (code == null || code.isEmpty) return;
 
-    setState(() => _processing = true);
+    // Jangan proses ulang kode yang sama (QR masih di depan kamera).
+    if (code == _lastCode) return;
+
+    setState(() {
+      _processing = true;
+      _lastCode = code;
+    });
+
     try {
-      final att = await ref.read(attendanceRepositoryProvider).checkinQr(
+      final res = await ref.read(attendanceRepositoryProvider).checkinQr(
             activityId: widget.activity.id,
             token: code,
           );
-      final name = att.userName ?? 'Anggota';
-      _showResult('$name ditandai HADIR', ok: true);
+      if (!mounted) return;
+      setState(() {
+        _ok = true;
+        _result = res.already
+            ? '${res.userName} sudah absen sebelumnya'
+            : '${res.userName} ditandai HADIR';
+      });
       ref.invalidate(attendancesProvider(widget.activity.id));
+      // Sukses: tetap _processing=true sampai petugas tekan "Scan Berikutnya".
     } catch (e) {
-      _showResult('$e'.replaceFirst('Exception: ', ''), ok: false);
+      if (!mounted) return;
+      setState(() {
+        _ok = false;
+        _result = '$e'.replaceFirst('Exception: ', '');
+      });
+      // Gagal: izinkan mencoba kode LAIN setelah jeda singkat.
+      // (_lastCode dibiarkan agar QR gagal yang sama tak spam berulang.)
+      Future.delayed(const Duration(milliseconds: 1200), () {
+        if (mounted) setState(() => _processing = false);
+      });
     }
   }
 
-  void _showResult(String msg, {required bool ok}) {
-    if (!mounted) return;
+  void _scanNext() {
     setState(() {
-      _lastResult = msg;
-      _lastOk = ok;
-    });
-    // Izinkan scan lagi setelah jeda singkat.
-    Future.delayed(const Duration(seconds: 2), () {
-      if (mounted) setState(() => _processing = false);
+      _processing = false;
+      _lastCode = null;
+      _result = null;
     });
   }
 
@@ -78,13 +97,17 @@ class _QrScanScreenState extends ConsumerState<QrScanScreen> {
       body: Stack(
         children: [
           MobileScanner(controller: _controller, onDetect: _onDetect),
-          // Bingkai pemindai
           Center(
             child: Container(
               width: 240,
               height: 240,
               decoration: BoxDecoration(
-                border: Border.all(color: Colors.white, width: 3),
+                border: Border.all(
+                  color: _result == null
+                      ? Colors.white
+                      : (_ok ? AppColors.success : AppColors.danger),
+                  width: 3,
+                ),
                 borderRadius: BorderRadius.circular(20),
               ),
             ),
@@ -95,35 +118,47 @@ class _QrScanScreenState extends ConsumerState<QrScanScreen> {
             bottom: 40,
             child: Column(
               children: [
-                if (_lastResult != null)
+                if (_result != null)
                   Container(
                     margin: const EdgeInsets.symmetric(horizontal: 24),
                     padding: const EdgeInsets.symmetric(
                         horizontal: 16, vertical: 12),
                     decoration: BoxDecoration(
-                      color: _lastOk ? AppColors.success : AppColors.danger,
+                      color: _ok ? AppColors.success : AppColors.danger,
                       borderRadius: BorderRadius.circular(14),
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Icon(
-                            _lastOk
+                            _ok
                                 ? Icons.check_circle_rounded
                                 : Icons.error_rounded,
                             color: Colors.white,
                             size: 20),
                         const SizedBox(width: 8),
                         Flexible(
-                          child: Text(_lastResult!,
+                          child: Text(_result!,
                               style: const TextStyle(color: Colors.white)),
                         ),
                       ],
                     ),
                   ),
                 const SizedBox(height: 16),
-                const Text('Arahkan ke QR anggota',
-                    style: TextStyle(color: Colors.white)),
+                // Setelah sukses, tampilkan tombol lanjut; sebelumnya, petunjuk.
+                if (_ok && _result != null)
+                  ElevatedButton.icon(
+                    onPressed: _scanNext,
+                    icon: const Icon(Icons.qr_code_scanner_rounded),
+                    label: const Text('Scan Berikutnya'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      foregroundColor: AppColors.primary,
+                    ),
+                  )
+                else
+                  const Text('Arahkan ke QR anggota',
+                      style: TextStyle(color: Colors.white)),
               ],
             ),
           ),

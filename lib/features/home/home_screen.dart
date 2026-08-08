@@ -14,6 +14,15 @@ class HomeScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final profileAsync = ref.watch(currentProfileProvider);
 
+    // Realtime: kartu Hadir/Tugas update sendiri saat ada kehadiran /
+    // pengumpulan baru milik user ini.
+    final myId = profileAsync.asData?.value?.id;
+    if (myId != null) {
+      void refreshDash(_, __) => ref.invalidate(dashboardStatsProvider);
+      ref.listen(userAttendanceRealtimeProvider(myId), refreshDash);
+      ref.listen(userSubmissionRealtimeProvider(myId), refreshDash);
+    }
+
     return Scaffold(
       body: SafeArea(
         child: RefreshIndicator(

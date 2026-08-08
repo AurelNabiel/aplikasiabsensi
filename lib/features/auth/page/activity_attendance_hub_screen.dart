@@ -118,7 +118,7 @@ class _ActivityAttendanceHubScreenState
             subtitle: 'Untuk dipindai petugas',
             onTap: () => Navigator.push(
               context,
-              MaterialPageRoute(builder: (_) => const MyQrScreen()),
+              MaterialPageRoute(builder: (_) => MyQrScreen(activityId: a.id)),
             ),
           ),
           if (_allowsLocation && _hasLocation)

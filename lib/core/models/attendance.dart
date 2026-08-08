@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../theme/app_colors.dart';
+import 'profile.dart';
 
 enum AttendanceStatus {
   hadir,
@@ -96,5 +97,49 @@ class AppLocation {
         lat: (m['lat'] as num).toDouble(),
         lng: (m['lng'] as num).toDouble(),
         radiusM: (m['radius_m'] as num?)?.toInt() ?? 100,
+      );
+}
+
+/// Satu baris roster: seorang anggota + status kehadirannya pada kegiatan.
+/// [status] null berarti BELUM absen. [attendanceId] null → belum ada baris.
+class RosterEntry {
+  const RosterEntry({
+    required this.memberId,
+    required this.fullName,
+    required this.role,
+    this.attendanceId,
+    this.status,
+    this.method,
+    this.checkInTime,
+    this.distanceM,
+    this.isMocked = false,
+  });
+
+  final String? attendanceId;
+  final String memberId;
+  final String fullName;
+  final UserRole role;
+  final AttendanceStatus? status;
+  final String? method;
+  final DateTime? checkInTime;
+  final double? distanceM;
+  final bool isMocked;
+
+  bool get belumAbsen => status == null;
+
+  factory RosterEntry.fromMap(Map<String, dynamic> m) => RosterEntry(
+        attendanceId: m['attendance_id'] as String?,
+        memberId: m['member_id'] as String,
+        fullName: (m['full_name'] as String?) ?? '',
+        role: UserRole.fromString(m['role'] as String?),
+        status: m['status'] != null
+            ? AttendanceStatus.fromString(m['status'] as String?)
+            : null,
+        method: m['method'] as String?,
+        checkInTime: m['check_in_time'] != null
+            ? DateTime.parse(m['check_in_time'] as String).toLocal()
+            : null,
+        distanceM: (m['distance_m'] as num?)?.toDouble(),
+        isMocked: (m['is_mocked'] as bool?) ?? false,
       );
 }

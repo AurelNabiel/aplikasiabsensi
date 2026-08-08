@@ -73,29 +73,19 @@ class _SplashScreenState extends State<SplashScreen>
                       Container(
                         width: 112,
                         height: 112,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(28),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.15),
-                              blurRadius: 30,
-                              offset: const Offset(0, 12),
-                            ),
-                          ],
-                        ),
+                    
                         child: Center(
                           child: Image.asset(
                             'assets/images/umadologo.png', 
-                            width: 120,
-                            height: 100,
+                            width: 180,
+                            height: 120,
                             fit: BoxFit.contain,
                           ),
                         ),
                       ),
                       const SizedBox(height: 24),
                       const Text(
-                        'UmadoBu',
+                        'Umalink',
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 34,

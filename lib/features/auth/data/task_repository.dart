@@ -90,7 +90,7 @@ class TaskRepository {
   Future<List<TaskSubmission>> fetchSubmissions(String taskId) async {
     final rows = await _client
         .from('task_submissions')
-        .select('*, profiles(full_name)')
+        .select('*, profiles!user_id(full_name)')
         .eq('task_id', taskId)
         .order('submitted_at', ascending: false);
     return (rows as List)

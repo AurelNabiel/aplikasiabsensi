@@ -43,3 +43,21 @@ final membersProvider = FutureProvider.autoDispose<List<Profile>>((ref) async {
       .map(Profile.fromMap)
       .toList();
 });
+
+/// Realtime: perubahan kehadiran milik user (untuk auto-refresh statistik/home).
+final userAttendanceRealtimeProvider = StreamProvider.autoDispose
+    .family<List<Map<String, dynamic>>, String>((ref, userId) {
+  final client = ref.watch(supabaseClientProvider);
+  return client
+      .from('attendances')
+      .stream(primaryKey: ['id']).eq('user_id', userId);
+});
+
+/// Realtime: perubahan pengumpulan tugas milik user.
+final userSubmissionRealtimeProvider = StreamProvider.autoDispose
+    .family<List<Map<String, dynamic>>, String>((ref, userId) {
+  final client = ref.watch(supabaseClientProvider);
+  return client
+      .from('task_submissions')
+      .stream(primaryKey: ['id']).eq('user_id', userId);
+});
