@@ -1,0 +1,38 @@
+name: umadoabsen
+description: "Aplikasi absensi, jadwal kegiatan, dan manajemen tugas dengan role & verifikasi kehadiran (QR + lokasi)."
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.3.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.6
+
+  # Backend
+  supabase_flutter: ^2.17.1
+
+  # State & routing
+  flutter_riverpod: ^3.3.2
+  go_router: ^17.4.0
+
+  # Absensi
+  mobile_scanner: ^7.4.0      # scan QR (petugas)
+  qr_flutter: ^4.1.0          # tampilkan QR personal (anggota)
+  geolocator: ^14.0.3         # geofence 100m
+
+  # UI & data
+  fl_chart: ^1.2.0           # grafik statistik minggu/bulan/tahun
+  google_fonts: ^8.2.1
+  intl: ^0.20.3
+
+dev_dependencies:
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/
+  
