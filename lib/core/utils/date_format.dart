@@ -20,3 +20,24 @@ String formatTanggal(DateTime dt) =>
 
 /// Contoh: "09:00"
 String formatJam(DateTime dt) => '${_dua(dt.hour)}:${_dua(dt.minute)}';
+
+/// Waktu relatif ringkas Bahasa Indonesia untuk pengingat.
+/// Contoh: "dalam 25 menit", "dalam 3 jam", "besok 09:00", "3 hari lagi".
+String formatRelatif(DateTime dt) {
+  final now = DateTime.now();
+  final diff = dt.difference(now);
+  if (diff.isNegative) return 'berlangsung';
+  if (diff.inMinutes < 1) return 'sebentar lagi';
+  if (diff.inMinutes < 60) return 'dalam ${diff.inMinutes} menit';
+  if (diff.inHours < 24) return 'dalam ${diff.inHours} jam';
+  if (diff.inDays == 1) return 'besok ${formatJam(dt)}';
+  if (diff.inDays < 7) return '${diff.inDays} hari lagi';
+  return formatTanggalJam(dt);
+}
+
+/// Hitung mundur live. Contoh: "02:15:30" (<24 jam) atau "3 hari 4 jam lagi".
+String formatHitungMundur(Duration d) {
+  if (d.isNegative || d.inSeconds == 0) return 'Dimulai';
+  if (d.inDays >= 1) return '${d.inDays} hari ${d.inHours % 24} jam lagi';
+  return '${_dua(d.inHours)}:${_dua(d.inMinutes % 60)}:${_dua(d.inSeconds % 60)}';
+}

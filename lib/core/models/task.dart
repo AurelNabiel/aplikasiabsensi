@@ -60,6 +60,9 @@ class TaskItem {
     this.startDate,
     this.deadline,
     this.mySubmission,
+    this.myAttachmentUrl,
+    this.myNotes,
+    this.myReviewNote,
     this.assigneeCount = 0,
     this.submissionCount = 0,
   });
@@ -73,6 +76,11 @@ class TaskItem {
 
   /// Status pengumpulan milik user saat ini (tampilan anggota).
   final SubmissionStatus? mySubmission;
+
+  /// Detail pengumpulan milik user (untuk isi ulang & lihat alasan review).
+  final String? myAttachmentUrl;
+  final String? myNotes;
+  final String? myReviewNote;
 
   /// Ringkasan untuk tampilan admin.
   final int assigneeCount;
@@ -88,10 +96,16 @@ class TaskItem {
     final assignees = (m['task_assignees'] as List?) ?? const [];
 
     SubmissionStatus? mine;
+    String? myAttachmentUrl;
+    String? myNotes;
+    String? myReviewNote;
     if (forUserId != null) {
       for (final s in subs) {
         if (s is Map && s['user_id'] == forUserId) {
           mine = SubmissionStatus.fromString(s['status'] as String?);
+          myAttachmentUrl = s['attachment_url'] as String?;
+          myNotes = s['notes'] as String?;
+          myReviewNote = s['review_note'] as String?;
           break;
         }
       }
@@ -109,6 +123,9 @@ class TaskItem {
           ? DateTime.parse(m['deadline'] as String).toLocal()
           : null,
       mySubmission: mine,
+      myAttachmentUrl: myAttachmentUrl,
+      myNotes: myNotes,
+      myReviewNote: myReviewNote,
       assigneeCount: assignees.length,
       submissionCount: subs.length,
     );
@@ -123,6 +140,8 @@ class TaskSubmission {
     required this.status,
     this.userName,
     this.notes,
+    this.attachmentUrl,
+    this.reviewNote,
     this.submittedAt,
   });
 
@@ -131,6 +150,8 @@ class TaskSubmission {
   final String userId;
   final String? userName;
   final String? notes;
+  final String? attachmentUrl;
+  final String? reviewNote;
   final SubmissionStatus status;
   final DateTime? submittedAt;
 
@@ -142,6 +163,8 @@ class TaskSubmission {
       userId: m['user_id'] as String,
       userName: (prof is Map) ? prof['full_name'] as String? : null,
       notes: m['notes'] as String?,
+      attachmentUrl: m['attachment_url'] as String?,
+      reviewNote: m['review_note'] as String?,
       status: SubmissionStatus.fromString(m['status'] as String?),
       submittedAt: m['submitted_at'] != null
           ? DateTime.parse(m['submitted_at'] as String).toLocal()

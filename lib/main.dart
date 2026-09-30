@@ -14,11 +14,11 @@ Future<void> main() async {
     anonKey: SupabaseConfig.anonKey,
   );
 
-  runApp(const ProviderScope(child: UmadoApp()));
+  runApp(const ProviderScope(child: UmalinkApp()));
 }
 
-class UmadoApp extends ConsumerWidget {
-  const UmadoApp({super.key});
+class UmalinkApp extends ConsumerWidget {
+  const UmalinkApp({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

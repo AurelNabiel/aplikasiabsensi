@@ -28,3 +28,17 @@ Future<GeoResult> getCurrentLocation() async {
   );
   return GeoResult(pos.latitude, pos.longitude, pos.isMocked);
 }
+
+/// Pantau lokasi secara live (update tiap pergerakan ~3 m).
+Stream<GeoResult> watchLocation() {
+  return Geolocator.getPositionStream(
+    locationSettings: const LocationSettings(
+      accuracy: LocationAccuracy.high,
+      distanceFilter: 3,
+    ),
+  ).map((p) => GeoResult(p.latitude, p.longitude, p.isMocked));
+}
+
+/// Jarak (meter) antara dua koordinat.
+double distanceMeters(double lat1, double lng1, double lat2, double lng2) =>
+    Geolocator.distanceBetween(lat1, lng1, lat2, lng2);

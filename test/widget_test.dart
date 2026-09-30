@@ -13,7 +13,7 @@ import 'package:umadoabsen/main.dart';
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
-    await tester.pumpWidget(const UmadoApp());
+    await tester.pumpWidget(const UmalinkApp());
 
     // Verify that our counter starts at 0.
     expect(find.text('0'), findsOneWidget);

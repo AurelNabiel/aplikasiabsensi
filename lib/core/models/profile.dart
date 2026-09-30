@@ -30,11 +30,44 @@ enum UserRole {
   bool isAtLeast(UserRole min) => level >= min.level;
 }
 
+enum Division {
+  danceCover,
+  kasei,
+  manga;
+
+  static Division? fromString(String? v) => switch (v) {
+        'dance_cover' => Division.danceCover,
+        'kasei' => Division.kasei,
+        'manga' => Division.manga,
+        _ => null,
+      };
+
+  String get value => switch (this) {
+        Division.danceCover => 'dance_cover',
+        Division.kasei => 'kasei',
+        Division.manga => 'manga',
+      };
+
+  String get label => switch (this) {
+        Division.danceCover => 'Dance Cover',
+        Division.kasei => 'Kasei',
+        Division.manga => 'Manga',
+      };
+
+  /// Path aset logo divisi.
+  String get asset => switch (this) {
+        Division.danceCover => 'assets/images/div_dance_cover.png',
+        Division.kasei => 'assets/images/div_kasei.png',
+        Division.manga => 'assets/images/div_manga.png',
+      };
+}
+
 class Profile {
   const Profile({
     required this.id,
     required this.fullName,
     required this.role,
+    this.division,
     this.avatarUrl,
     this.phone,
     this.jabatan,
@@ -46,6 +79,13 @@ class Profile {
   final String? phone;
   final String? jabatan;
   final UserRole role;
+  final Division? division;
+
+  /// Nama panggilan = kata pertama dari nama lengkap (untuk sapaan ringkas).
+  String get callName {
+    final parts = fullName.trim().split(RegExp(r'\s+'));
+    return (parts.isEmpty || parts.first.isEmpty) ? 'Pengguna' : parts.first;
+  }
 
   factory Profile.fromMap(Map<String, dynamic> map) {
     return Profile(
@@ -55,6 +95,7 @@ class Profile {
       phone: map['phone'] as String?,
       jabatan: map['jabatan'] as String?,
       role: UserRole.fromString(map['role'] as String?),
+      division: Division.fromString(map['division'] as String?),
     );
   }
 }

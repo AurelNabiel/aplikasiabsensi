@@ -1,3 +1,4 @@
+import 'profile.dart';
 /// Metode absensi untuk sebuah kegiatan, selaras dengan enum
 /// `activity_method` di database.
 enum ActivityMethod {
@@ -26,6 +27,7 @@ class Activity {
     required this.startTime,
     required this.endTime,
     required this.method,
+    this.division,
     required this.status,
     this.description,
     this.locationId,
@@ -40,6 +42,7 @@ class Activity {
   final DateTime startTime;
   final DateTime endTime;
   final ActivityMethod method;
+  final Division? division;
   final String status;
 
   factory Activity.fromMap(Map<String, dynamic> map) {
@@ -53,7 +56,33 @@ class Activity {
       startTime: DateTime.parse(map['start_time'] as String).toLocal(),
       endTime: DateTime.parse(map['end_time'] as String).toLocal(),
       method: ActivityMethod.fromString(map['method'] as String?),
+      division: Division.fromString(map['division'] as String?),
       status: (map['status'] as String?) ?? 'scheduled',
     );
   }
+}
+
+/// Kegiatan mendatang untuk pengingat divisi.
+class UpcomingActivity {
+  const UpcomingActivity({
+    required this.id,
+    required this.title,
+    required this.startTime,
+    required this.endTime,
+    this.division,
+  });
+
+  final String id;
+  final String title;
+  final DateTime startTime;
+  final DateTime endTime;
+  final Division? division;
+
+  factory UpcomingActivity.fromMap(Map<String, dynamic> m) => UpcomingActivity(
+        id: m['id'] as String,
+        title: m['title'] as String,
+        startTime: DateTime.parse(m['start_time'] as String).toLocal(),
+        endTime: DateTime.parse(m['end_time'] as String).toLocal(),
+        division: Division.fromString(m['division'] as String?),
+      );
 }

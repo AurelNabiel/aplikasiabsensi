@@ -17,17 +17,19 @@ enum StatsPeriod {
       };
 
   /// Rentang [from, to) berdasarkan waktu sekarang (lokal).
+  /// Minggu & Bulan memakai jendela bergulir (rolling) agar data terbaru
+  /// selalu tampil walau melewati batas bulan kalender.
   (DateTime, DateTime) range() {
     final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
     switch (this) {
       case StatsPeriod.minggu:
-        final today = DateTime(now.year, now.month, now.day);
         return (today.subtract(const Duration(days: 6)),
             today.add(const Duration(days: 1)));
       case StatsPeriod.bulan:
-        final first = DateTime(now.year, now.month, 1);
-        final next = DateTime(now.year, now.month + 1, 1);
-        return (first, next);
+        // 30 hari terakhir (rolling), termasuk hari ini.
+        return (today.subtract(const Duration(days: 29)),
+            today.add(const Duration(days: 1)));
       case StatsPeriod.tahun:
         return (DateTime(now.year, 1, 1), DateTime(now.year + 1, 1, 1));
     }
@@ -44,6 +46,7 @@ class StatsSummary {
     required this.totalKegiatan,
     required this.tugasTotal,
     required this.tugasDikerjakan,
+    this.poinKontribusi = 0,
   });
 
   final int hadir;
@@ -54,6 +57,7 @@ class StatsSummary {
   final int totalKegiatan;
   final int tugasTotal;
   final int tugasDikerjakan;
+  final int poinKontribusi;
 
   /// Tingkat kehadiran 0..1.
   double get rate => totalKegiatan == 0 ? 0 : hadir / totalKegiatan;
@@ -61,6 +65,16 @@ class StatsSummary {
 
   /// Rasio tugas dikerjakan 0..1.
   double get taskRate => tugasTotal == 0 ? 0 : tugasDikerjakan / tugasTotal;
+
+  /// Skema poin keaktifan.
+  static const int poinPerHadir = 10;
+  static const int poinPerTugas = 5;
+
+  int get poinKehadiran => hadir * poinPerHadir;
+  int get poinTugas => tugasDikerjakan * poinPerTugas;
+
+  /// Total poin keaktifan = kehadiran + tugas + kontribusi manual.
+  int get poinTotal => poinKehadiran + poinTugas + poinKontribusi;
 
   /// Skor keaktifan gabungan: rata-rata komponen yang tersedia
   /// (kehadiran & tugas). Bila periode tak punya kegiatan/tugas,
@@ -77,7 +91,7 @@ class StatsSummary {
 
   /// True bila tidak ada aktivitas apa pun pada periode ini.
   bool get isEmpty =>
-      totalKegiatan == 0 && tugasTotal == 0 && hadir == 0;
+      totalKegiatan == 0 && tugasTotal == 0 && hadir == 0 && poinKontribusi == 0;
 
   factory StatsSummary.fromMap(Map<String, dynamic> m) => StatsSummary(
         hadir: (m['hadir'] as num?)?.toInt() ?? 0,
@@ -88,11 +102,12 @@ class StatsSummary {
         totalKegiatan: (m['total_kegiatan'] as num?)?.toInt() ?? 0,
         tugasTotal: (m['tugas_total'] as num?)?.toInt() ?? 0,
         tugasDikerjakan: (m['tugas_dikerjakan'] as num?)?.toInt() ?? 0,
+        poinKontribusi: (m['poin_kontribusi'] as num?)?.toInt() ?? 0,
       );
 
   static const empty = StatsSummary(
     hadir: 0, izin: 0, sakit: 0, alpha: 0, pending: 0,
-    totalKegiatan: 0, tugasTotal: 0, tugasDikerjakan: 0,
+    totalKegiatan: 0, tugasTotal: 0, tugasDikerjakan: 0, poinKontribusi: 0,
   );
 }
 
@@ -125,19 +140,19 @@ class DashboardStats {
   const DashboardStats({
     required this.hadirBulan,
     required this.tugasAktif,
-    required this.kegiatanMendatang,
+    required this.kegiatanBerlangsung,
   });
 
   final int hadirBulan;
   final int tugasAktif;
-  final int kegiatanMendatang;
+  final int kegiatanBerlangsung;
 
   factory DashboardStats.fromMap(Map<String, dynamic> m) => DashboardStats(
         hadirBulan: (m['hadir_bulan'] as num?)?.toInt() ?? 0,
         tugasAktif: (m['tugas_aktif'] as num?)?.toInt() ?? 0,
-        kegiatanMendatang: (m['kegiatan_mendatang'] as num?)?.toInt() ?? 0,
+        kegiatanBerlangsung: (m['kegiatan_berlangsung'] as num?)?.toInt() ?? 0,
       );
 
   static const empty =
-      DashboardStats(hadirBulan: 0, tugasAktif: 0, kegiatanMendatang: 0);
+      DashboardStats(hadirBulan: 0, tugasAktif: 0, kegiatanBerlangsung: 0);
 }
