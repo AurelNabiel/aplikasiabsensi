@@ -38,7 +38,7 @@ class NotificationScreen extends ConsumerWidget {
     final empty = upcoming.isEmpty && tasks.isEmpty;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Notifikasi')),
+      appBar: const GradientAppBar(title: 'Notifikasi'),
       body: empty
           ? Center(
               child: Column(

@@ -15,7 +15,9 @@ class AttendanceActivityListScreen extends ConsumerWidget {
     final activitiesAsync = ref.watch(activitiesProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Absensi')),
+      appBar: const GradientAppBar(title: 'Absensi'),
+      extendBody: true,
+      bottomNavigationBar: const FloatingNavBar(current: NavTab.absen),
       body: activitiesAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (e, _) => Center(
@@ -34,7 +36,7 @@ class AttendanceActivityListScreen extends ConsumerWidget {
           return RefreshIndicator(
             onRefresh: () async => ref.invalidate(activitiesProvider),
             child: ListView.separated(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 110),
               itemCount: items.length,
               separatorBuilder: (_, __) => const SizedBox(height: 10),
               itemBuilder: (_, i) => _ActivityTile(activity: items[i]),

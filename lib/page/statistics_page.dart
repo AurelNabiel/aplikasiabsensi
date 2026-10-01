@@ -147,7 +147,7 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
 
     if (profile == null) {
       return Scaffold(
-        appBar: AppBar(title: const Text('Statistik')),
+        appBar: const GradientAppBar(title: 'Statistik'),
         body: const Center(child: CircularProgressIndicator()),
       );
     }
@@ -159,9 +159,11 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
         ref.watch(statsDataProvider((userId: targetId, period: _period)));
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Statistik')),
+      appBar: const GradientAppBar(title: 'Statistik'),
+      extendBody: true,
+      bottomNavigationBar: const FloatingNavBar(current: NavTab.none),
       body: ListView(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.fromLTRB(20, 20, 20, 110),
         children: [
           _PeriodSelector(
             period: _period,

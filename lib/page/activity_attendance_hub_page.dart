@@ -77,7 +77,7 @@ class _ActivityAttendanceHubScreenState
     final a = widget.activity;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Absensi Kegiatan')),
+      appBar: const GradientAppBar(title: 'Absensi Kegiatan'),
       body: ListView(
         padding: const EdgeInsets.all(20),
         children: [

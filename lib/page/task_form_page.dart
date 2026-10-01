@@ -144,7 +144,7 @@ class _TaskFormScreenState extends ConsumerState<TaskFormScreen> {
     final effective = _resolveAssignees(members).length;
 
     return Scaffold(
-      appBar: AppBar(title: Text(_isEdit ? 'Edit Tugas' : 'Tugas Baru')),
+      appBar: GradientAppBar(title: _isEdit ? 'Edit Tugas' : 'Tugas Baru'),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(20),

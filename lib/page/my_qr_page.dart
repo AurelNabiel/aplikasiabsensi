@@ -74,7 +74,7 @@ class _MyQrScreenState extends ConsumerState<MyQrScreen> {
     if (verified) _timer?.cancel(); // hentikan rotasi bila sudah tercatat
 
     return Scaffold(
-      appBar: AppBar(title: const Text('QR Saya')),
+      appBar: const GradientAppBar(title: 'QR Saya'),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(24),

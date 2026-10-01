@@ -6,23 +6,23 @@
 - [X] **Skor Keaktifan dari tugas** — masukkan komponen "tugas tepat waktu" ke Statistik (update RPC stats_summary / stats_series + kartu Keaktifan)
 - [X] **Edit tugas** — modul Tugas baru bisa create & delete, belum ada edit
 - [X] **Validasi waktu saat absen** — RPC check-in cek apakah now() berada di rentang start_time–end_time kegiatan
-- [ ] **Kredensial Supabase tidak hardcoded** — pindah supabase_config.dart ke --dart-define/env, jangan di-commit
+- [X] **Kredensial Supabase tidak hardcoded** — pindah supabase_config.dart ke --dart-define/env, jangan di-commit
 - [ ] **Lupa / reset password**
-- [ ] **Konfirmasi email + deep link** untuk produksi (sempat dimatikan saat dev)
+- [] **Konfirmasi email + deep link** untuk produksi (sempat dimatikan saat dev)
 - [X] **Storage bucket + policy** untuk foto profil & lampiran tugas (attachment_url sudah ada di DB)
 - [X] **Pesan error lebih ramah** — parse PostgrestException / AuthException jadi pesan spesifik
 
 ##  Penting tapi bisa nanti
 
 - [X] **Foto profil** (upload avatar) — sekarang hanya inisial
-- [] **Notifikasi / pengingat** — deadline tugas & kegiatan akan mulai (local notif / FCM)
+- [X] **Notifikasi / pengingat** — deadline tugas & kegiatan akan mulai (local notif / FCM)
 - [X] **Realtime daftar kehadiran** — auto-update saat petugas scan (Supabase Realtime)
 - [X] **Bottom navigation bar** tetap — navigasi lebih cepat daripada grid menu
 - [X] **Filter kegiatan** (hari ini / mendatang / lampau) di daftar Jadwal
 - [X] **Riwayat kehadiran pribadi** — anggota lihat rekap check-in miliknya
 - [X] **Peta lokasi kegiatan** — lihat titik & radius; pilih lokasi yang sudah ada + atur radius saat buat kegiatan
 - [X] **Lampiran tugas** (file / link), bukan hanya catatan teks
-- [ ] **Overdue tugas otomatis** — update status via job/trigger, bukan hanya dihitung di HP
+- [X] **Overdue tugas otomatis** — update status via job/trigger, bukan hanya dihitung di HP
 
 ##  Kalo Niat
 

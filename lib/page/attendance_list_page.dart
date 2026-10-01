@@ -43,7 +43,7 @@ class _AttendanceListScreenState extends ConsumerState<AttendanceListScreen> {
     final async = ref.watch(activityRosterProvider(activity.id));
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Kehadiran')),
+      appBar: const GradientAppBar(title: 'Kehadiran'),
       body: async.when(
         skipLoadingOnReload: true,
         loading: () => const Center(child: CircularProgressIndicator()),

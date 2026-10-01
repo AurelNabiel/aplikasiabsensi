@@ -16,7 +16,7 @@ class MembersScreen extends ConsumerWidget {
     final async = ref.watch(allProfilesProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Kelola Anggota')),
+      appBar: const GradientAppBar(title: 'Kelola Anggota'),
       body: async.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (_, __) => Center(

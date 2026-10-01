@@ -21,7 +21,9 @@ class _MemberListScreenState extends ConsumerState<MemberListScreen> {
     final async = ref.watch(membersDirectoryProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Anggota')),
+      appBar: const GradientAppBar(title: 'Anggota'),
+      extendBody: true,
+      bottomNavigationBar: const FloatingNavBar(current: NavTab.none),
       body: Column(
         children: [
           Padding(
@@ -63,7 +65,7 @@ class _MemberListScreenState extends ConsumerState<MemberListScreen> {
                   onRefresh: () async =>
                       ref.invalidate(membersDirectoryProvider),
                   child: ListView.separated(
-                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 110),
                     itemCount: filtered.length,
                     separatorBuilder: (_, __) => const SizedBox(height: 10),
                     itemBuilder: (_, i) => _MemberTile(profile: filtered[i]),

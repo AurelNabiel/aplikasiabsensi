@@ -114,9 +114,8 @@ class _ActivityFormScreenState extends ConsumerState<ActivityFormScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(_isEdit ? 'Edit Kegiatan' : 'Kegiatan Baru'),
-      ),
+      appBar: GradientAppBar(
+          title: _isEdit ? 'Edit Kegiatan' : 'Kegiatan Baru'),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(20),

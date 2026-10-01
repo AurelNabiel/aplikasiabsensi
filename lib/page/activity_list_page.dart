@@ -19,16 +19,20 @@ class ActivityListScreen extends ConsumerWidget {
     final isAdmin = profile?.role.isAtLeast(UserRole.admin) ?? false;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Jadwal Kegiatan')),
-      floatingActionButton: isAdmin
-          ? FloatingActionButton.extended(
-              onPressed: () => context.push('/activity/form'),
-              backgroundColor: AppColors.primary,
-              icon: const Icon(Icons.add_rounded, color: Colors.white),
-              label:
-                  const Text('Kegiatan', style: TextStyle(color: Colors.white)),
-            )
-          : null,
+      appBar: GradientAppBar(
+        title: 'Jadwal Kegiatan',
+        actions: isAdmin
+            ? [
+                IconButton(
+                  icon: const Icon(Icons.add_rounded),
+                  tooltip: 'Tambah Kegiatan',
+                  onPressed: () => context.push('/activity/form'),
+                ),
+              ]
+            : null,
+      ),
+      extendBody: true,
+      bottomNavigationBar: const FloatingNavBar(current: NavTab.jadwal),
       body: activitiesAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (e, _) => _ErrorState(
@@ -39,7 +43,7 @@ class ActivityListScreen extends ConsumerWidget {
           return RefreshIndicator(
             onRefresh: () async => ref.invalidate(activitiesProvider),
             child: ListView.separated(
-              padding: const EdgeInsets.fromLTRB(16, 16, 16, 96),
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 110),
               itemCount: items.length,
               separatorBuilder: (_, __) => const SizedBox(height: 12),
               itemBuilder: (context, i) => _ActivityCard(

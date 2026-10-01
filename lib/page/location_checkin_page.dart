@@ -127,7 +127,7 @@ class _LocationCheckinScreenState
     final inside = (dist != null && target != null) ? dist <= target.radius : null;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Check-in Lokasi')),
+      appBar: const GradientAppBar(title: 'Check-in Lokasi'),
       body: Column(
         children: [
           Expanded(

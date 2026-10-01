@@ -81,8 +81,8 @@ class _QrScanScreenState extends ConsumerState<QrScanScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Pindai QR'),
+      appBar: GradientAppBar(
+        title: 'Pindai QR',
         actions: [
           IconButton(
             icon: const Icon(Icons.flash_on_rounded),

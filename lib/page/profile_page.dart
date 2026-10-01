@@ -20,7 +20,9 @@ class ProfileScreen extends ConsumerWidget {
     final email = ref.watch(profileRepositoryProvider).currentEmail;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Profil')),
+      appBar: const GradientAppBar(title: 'Profil'),
+      extendBody: true,
+      bottomNavigationBar: const FloatingNavBar(current: NavTab.profil),
       body: profileAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (_, __) => const Center(child: Text('Gagal memuat profil')),
@@ -30,7 +32,7 @@ class ProfileScreen extends ConsumerWidget {
           }
           final isAdmin = profile.role.isAtLeast(UserRole.admin);
           return ListView(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.fromLTRB(20, 20, 20, 110),
             children: [
               Center(
                 child: Column(

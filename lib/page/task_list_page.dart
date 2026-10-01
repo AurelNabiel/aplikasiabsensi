@@ -19,7 +19,7 @@ class TaskListScreen extends ConsumerWidget {
 
     if (profile == null) {
       return Scaffold(
-        appBar: AppBar(title: const Text('Tugas')),
+        appBar: const GradientAppBar(title: 'Tugas'),
         body: const Center(child: CircularProgressIndicator()),
       );
     }
@@ -38,21 +38,27 @@ class TaskListScreen extends ConsumerWidget {
     }
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Tugas')),
-      floatingActionButton: isAdmin
-          ? FloatingActionButton.extended(
-              onPressed: () async {
-                await Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const TaskFormScreen()),
-                );
-                refresh();
-              },
-              backgroundColor: AppColors.primary,
-              icon: const Icon(Icons.add_rounded, color: Colors.white),
-              label: const Text('Tugas', style: TextStyle(color: Colors.white)),
-            )
-          : null,
+      appBar: GradientAppBar(
+        title: 'Tugas',
+        actions: isAdmin
+            ? [
+                IconButton(
+                  icon: const Icon(Icons.add_rounded),
+                  tooltip: 'Tambah Tugas',
+                  onPressed: () async {
+                    await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => const TaskFormScreen()),
+                    );
+                    refresh();
+                  },
+                ),
+              ]
+            : null,
+      ),
+      extendBody: true,
+      bottomNavigationBar: const FloatingNavBar(current: NavTab.tugas),
       body: tasksAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (e, _) => Center(
@@ -80,7 +86,7 @@ class TaskListScreen extends ConsumerWidget {
           return RefreshIndicator(
             onRefresh: () async => refresh(),
             child: ListView.separated(
-              padding: const EdgeInsets.fromLTRB(16, 16, 16, 96),
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 110),
               itemCount: tasks.length,
               separatorBuilder: (_, __) => const SizedBox(height: 12),
               itemBuilder: (_, i) => _TaskCard(

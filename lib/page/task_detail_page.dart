@@ -128,8 +128,8 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
   Widget build(BuildContext context) {
     final t = widget.task;
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Detail Tugas'),
+      appBar: GradientAppBar(
+        title: 'Detail Tugas',
         actions: [
           if (widget.isAdmin)
             IconButton(
